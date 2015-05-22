@@ -50,10 +50,7 @@ modifications."
 `narrow-to-defun' and friends."
   (when narrow-reindent-mode
     (let ((beg (point-min))
-          (end (save-excursion
-                 (end-of-buffer)
-                 (beginning-of-line-text)
-                 (point))))
+          (end (point-max)))
       (setq narrow-reindent--point-min beg)
       (setq narrow-reindent--point-max end)
       (setq narrow-reindent--indent-amount (indent-rigidly--current-indentation beg end))
