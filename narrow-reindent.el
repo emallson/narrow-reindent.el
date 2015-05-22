@@ -10,13 +10,14 @@
 
 (defvar-local narrow-reindent--point-min 0)
 (defvar-local narrow-reindent--point-max 0)
+(defvar-local narrow-reindent--indent-amount 0)
 
 (define-minor-mode narrow-reindent-mode
   "Toggle Narrow-Reindent mode.
 
 When Narrow-Reindent mode is active, after narrowing to a defun
 the buffer is re-indented. After widening, this narrowed region
-is re-indented again. This mode uses the `indent-region' to
+is re-indented again. This mode uses the `indent-rigidly' to
 perform indentation."
   :lighter " NaRe"
   :group 'narrow-reindent
@@ -24,10 +25,10 @@ perform indentation."
   (if narrow-reindent-mode
       (progn
         (advice-add #'narrow-to-defun :after #'narrow-reindent--after-narrow)
-        (advice-add #'widen :after #'narrow-reindent--after-widen))
+        (advice-add #'widen :before #'narrow-reindent--before-widen))
     (progn
       (advice-remove #'narrow-to-defun #'narrow-reindent--after-narrow)
-      (advice-remove #'widen #'narrow-reindent--after-widen))))
+      (advice-remove #'widen #'narrow-reindent--before-widen))))
 
 (defmacro without-undo (&rest forms)
   "Executes FORMS with a temporary buffer-undo-list that is discarded afterwards.
@@ -44,19 +45,24 @@ modifications."
 (defun narrow-reindent--after-narrow ()
   "Indent narrowed buffer. This function is used as advice for
 `narrow-to-defun'."
-  (let ((beg (point-min))
-        (end (point-max)))
-    (setq narrow-reindent--point-min beg)
-    (setq narrow-reindent--point-max end)
-    (without-undo
-     (indent-region beg end))))
+  (when narrow-reindent-mode
+    (let ((beg (point-min))
+          (end (save-excursion
+                 (end-of-buffer)
+                 (beginning-of-line-text)
+                 (point))))
+      (setq narrow-reindent--point-min beg)
+      (setq narrow-reindent--point-max end)
+      (setq narrow-reindent--indent-amount (indent-rigidly--current-indentation beg end))
+      (without-undo
+       (indent-rigidly beg end (- narrow-reindent--indent-amount))))))
 
-(defun narrow-reindent--after-widen ()
+(defun narrow-reindent--before-widen ()
   "Indent the region that the buffer was narrowed to. This
 function is used as advice for `widen'."
-  (without-undo
-   (indent-region narrow-reindent--point-min narrow-reindent--point-max)))
-
+  (when narrow-reindent-mode
+    (without-undo
+     (indent-rigidly narrow-reindent--point-min narrow-reindent--point-max narrow-reindent--indent-amount))))
 
 (provide 'narrow-reindent)
 ;;; narrow-reindent.el ends here
