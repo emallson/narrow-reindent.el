@@ -21,17 +21,13 @@ indentation."
   :lighter " NaRe"
   :group 'narrow-reindent
   :init-value nil
-  (if narrow-reindent-mode
-      (progn
-        (advice-add #'narrow-to-defun :after #'narrow-reindent--after-narrow)
-        (advice-add #'narrow-to-page :after #'narrow-reindent--after-narrow)
-        (advice-add #'narrow-to-region :after #'narrow-reindent--after-narrow)
-        (advice-add #'widen :before #'narrow-reindent--before-widen))
-    (progn
-      (advice-remove #'narrow-to-defun #'narrow-reindent--after-narrow)
-      (advice-remove #'narrow-to-page #'narrow-reindent--after-narrow)
-      (advice-remove #'narrow-to-region #'narrow-reindent--after-narrow)
-      (advice-remove #'widen #'narrow-reindent--before-widen))))
+  ;; Advice is inherently global. Did not know that during first writing. There
+  ;; are no narrow hooks. Not super sure about this method now. Regardless, it
+  ;; works.
+  (advice-add #'narrow-to-defun :after #'narrow-reindent--after-narrow)
+  (advice-add #'narrow-to-page :after #'narrow-reindent--after-narrow)
+  (advice-add #'narrow-to-region :after #'narrow-reindent--after-narrow)
+  (advice-add #'widen :before #'narrow-reindent--before-widen))
 
 (defmacro without-undo (&rest forms)
   "Executes FORMS with a temporary buffer-undo-list that is discarded afterwards.
