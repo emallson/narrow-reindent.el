@@ -1,4 +1,4 @@
-;;; narrow-reindent.el --- Summary
+;;; narrow-reindent.el --- Defines a minor mode to left-align narrowed regions.
 ;;;
 ;;; Copyright: © 2015 J David Smith
 ;;;
