@@ -1,6 +1,10 @@
-;;; narrow-reindent.el
+;;; narrow-reindent.el --- Summary
 ;;;
-;;; Summary:
+;;; Author: J David Smith <emallson@atlanis.net>
+;;; Maintainer: J David Smith <emallson@atlanis.net>
+;;; Homepage: https://github.com/emallson/narrow-reindent.el
+;;;
+;;; Commentary:
 ;;;
 ;;; Defines a minor mode `narrow-reindent-mode' that reindents the region
 ;;; narrowed to. The region is then indented again after widening the buffer.
@@ -30,20 +34,22 @@ indentation."
   (advice-add #'widen :before #'narrow-reindent--before-widen))
 
 (defmacro without-undo (&rest forms)
-  "Executes FORMS with a temporary buffer-undo-list that is discarded afterwards.
+  "Execute FORMS with a temporary `buffer-undo-list'.
 
 Taken from http://www.emacswiki.org/emacs/UndoCommands with some
 modifications."
-`(let* ((buffer-undo-list)
+  `(let* ((buffer-undo-list)
           (modified (buffer-modified-p))
           (inhibit-read-only t))
-   (unwind-protect
-       (progn ,@forms)
-     (set-buffer-modified-p modified)) ()))
+     (unwind-protect
+         (progn ,@forms)
+       (set-buffer-modified-p modified)) ()))
 
 (defun narrow-reindent--after-narrow (&rest _r)
-  "Indent narrowed buffer. This function is used as advice for
-`narrow-to-defun' and friends."
+  "Indent narrowed buffer.
+
+This function is used as advice for `narrow-to-defun' and
+friends."
   (when narrow-reindent-mode
     (let ((beg (point-min))
           (end (point-max)))
@@ -54,8 +60,9 @@ modifications."
        (indent-rigidly beg end (- narrow-reindent--indent-amount))))))
 
 (defun narrow-reindent--before-widen (&rest _r)
-  "Indent the region that the buffer was narrowed to. This
-function is used as advice for `widen'."
+  "Indent the region that the buffer was narrowed to.
+
+This function is used as advice for `widen'."
   (when narrow-reindent-mode
     (without-undo
      (indent-rigidly narrow-reindent--point-min narrow-reindent--point-max narrow-reindent--indent-amount))))
