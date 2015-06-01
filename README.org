@@ -1,0 +1,10 @@
+* narrow-reindent.el
+  Defines a minor mode `narrow-reindent-mode' that reindents the region
+  narrowed to. The region is then indented again after widening the buffer.
+* Known Issues
+
+  - The new indentation is saved if the narrowed buffer is saved. [Issue #1]
+
+* LICENSE
+  This code is © 2015 J David Smith and is released to the public under the
+  terms of the GPLv3 license.
