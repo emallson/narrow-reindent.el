@@ -20,7 +20,7 @@
 ;;; Maintainer: J David Smith <emallson@atlanis.net>
 ;;; Homepage: https://github.com/emallson/narrow-reindent.el
 ;;;
-;;; Version: v0.1.0
+;;; Version: 0.1.0
 ;;; Package-Requires: ((emacs "24.4"))
 ;;;
 ;;; Commentary:
