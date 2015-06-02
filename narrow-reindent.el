@@ -20,6 +20,9 @@
 ;;; Maintainer: J David Smith <emallson@atlanis.net>
 ;;; Homepage: https://github.com/emallson/narrow-reindent.el
 ;;;
+;;; Version: v0.1.0
+;;; Package-Requires: ((emacs "24.4"))
+;;;
 ;;; Commentary:
 ;;;
 ;;; Defines a minor mode `narrow-reindent-mode' that reindents the region
@@ -31,6 +34,7 @@
 (defvar-local narrow-reindent--point-max 0)
 (defvar-local narrow-reindent--indent-amount 0)
 
+;;;###autoload
 (define-minor-mode narrow-reindent-mode
   "Toggle Narrow-Reindent mode.
 
