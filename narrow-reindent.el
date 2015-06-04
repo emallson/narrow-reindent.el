@@ -53,11 +53,17 @@ indentation."
   (advice-add #'narrow-to-region :after #'narrow-reindent--after-narrow)
   (advice-add #'widen :before #'narrow-reindent--before-widen))
 
-(defmacro without-undo (&rest forms)
+(defmacro narrow-reindent--without-undo (&rest forms)
   "Execute FORMS with a temporary `buffer-undo-list'.
 
 Taken from http://www.emacswiki.org/emacs/UndoCommands with some
-modifications."
+modifications.
+
+This function uses a two-hyphen prefix because it is not intended
+for other packages to use.  If another package author wishes to
+use this function, contact the maintainer of `narrow-reindent'
+and figure out a way to do it without adding an oddball
+dependency."
   `(let* ((buffer-undo-list)
           (modified (buffer-modified-p))
           (inhibit-read-only t))
@@ -76,7 +82,7 @@ friends."
       (setq narrow-reindent--point-min beg)
       (setq narrow-reindent--point-max end)
       (setq narrow-reindent--indent-amount (indent-rigidly--current-indentation beg end))
-      (without-undo
+      (narrow-reindent--without-undo
        (indent-rigidly beg end (- narrow-reindent--indent-amount))))))
 
 (defun narrow-reindent--before-widen (&rest _r)
@@ -84,7 +90,7 @@ friends."
 
 This function is used as advice for `widen'."
   (when narrow-reindent-mode
-    (without-undo
+    (narrow-reindent--without-undo
      (indent-rigidly narrow-reindent--point-min narrow-reindent--point-max narrow-reindent--indent-amount))))
 
 (provide 'narrow-reindent)
