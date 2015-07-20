@@ -1,33 +1,31 @@
 ;;; narrow-reindent.el --- Defines a minor mode to left-align narrowed regions.
-;;;
-;;; Copyright: © 2015 J David Smith
-;;;
-;;; This program is free software: you can redistribute it and/or modify
-;;; it under the terms of the GNU General Public License as published by
-;;; the Free Software Foundation, either version 3 of the License, or
-;;; (at your option) any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;; GNU General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-;;;
-;;;
-;;; Author: J David Smith <emallson@atlanis.net>
-;;; Maintainer: J David Smith <emallson@atlanis.net>
-;;; Homepage: https://github.com/emallson/narrow-reindent.el
-;;;
-;;; Version: 0.1.0
-;;; Package-Requires: ((emacs "24.4"))
-;;;
+
+;; Copyright: © 2015 J David Smith
+;;
+;; Author: J David Smith <emallson@atlanis.net>
+;; Maintainer: J David Smith <emallson@atlanis.net>
+;; Homepage: https://github.com/emallson/narrow-reindent.el
+;; Version: 0.1.0
+;; Package-Requires: ((emacs "24.4"))
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 ;;; Commentary:
-;;;
-;;; Defines a minor mode `narrow-reindent-mode' that reindents the region
-;;; narrowed to. The region is then indented again after widening the buffer.
-;;;
+
+;; Defines a minor mode `narrow-reindent-mode' that reindents the region
+;; narrowed to. The region is then indented again after widening the buffer.
+
 ;;; Code:
 
 (defvar-local narrow-reindent--point-min 0)
