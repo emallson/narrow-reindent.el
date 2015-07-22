@@ -37,19 +37,16 @@
   "Toggle Narrow-Reindent mode.
 
 When Narrow-Reindent mode is active, after narrowing the buffer
-is re-indented. After widening, this narrowed region is
+is re-indented. Before widening, this narrowed region is
 re-indented again. This mode uses the `indent-region' to perform
 indentation."
   :lighter " NaRe"
   :group 'narrow-reindent
   :init-value nil
-  ;; Advice is inherently global. Did not know that during first writing. There
-  ;; are no narrow hooks. Not super sure about this method now. Regardless, it
-  ;; works.
-  (advice-add #'narrow-to-defun :after #'narrow-reindent--after-narrow)
-  (advice-add #'narrow-to-page :after #'narrow-reindent--after-narrow)
-  (advice-add #'narrow-to-region :after #'narrow-reindent--after-narrow)
-  (advice-add #'widen :before #'narrow-reindent--before-widen))
+  :keymap '(([remap narrow-to-defun]  . narrow-reindent-to-defun)
+            ([remap narrow-to-page]   . narrow-reindent-to-page)
+            ([remap narrow-to-region] . narrow-reindent-to-region)
+            ([remap widen]            . narrow-reindent-widen)))
 
 (defmacro narrow-reindent--without-undo (&rest forms)
   "Execute FORMS with a temporary `buffer-undo-list'.
@@ -70,10 +67,7 @@ dependency."
        (set-buffer-modified-p modified)) ()))
 
 (defun narrow-reindent--after-narrow (&rest _r)
-  "Indent narrowed buffer.
-
-This function is used as advice for `narrow-to-defun' and
-friends."
+  "Indent narrowed buffer."
   (when narrow-reindent-mode
     (let ((beg (point-min))
           (end (point-max)))
@@ -84,12 +78,42 @@ friends."
        (indent-rigidly beg end (- narrow-reindent--indent-amount))))))
 
 (defun narrow-reindent--before-widen (&rest _r)
-  "Indent the region that the buffer was narrowed to.
-
-This function is used as advice for `widen'."
+  "Indent the region that the buffer was narrowed to."
   (when narrow-reindent-mode
     (narrow-reindent--without-undo
      (indent-rigidly narrow-reindent--point-min narrow-reindent--point-max narrow-reindent--indent-amount))))
+
+(defun narrow-reindent-to-defun (&optional arg)
+  "Make text outside the current defun invisible.
+Align the visible region to the margin.
+Optional `ARG' is ignored."
+  (interactive)
+  (narrow-to-defun)
+  (narrow-reindent--after-narrow))
+
+(defun narrow-reindent-to-region (start end)
+  "Restrict editing in this buffer to the region from `START' to `END'.
+Align the visible region to the margin."
+  (interactive "r")
+  (narrow-to-region start end)
+  (narrow-reindent--after-narrow))
+
+(defun narrow-reindent-to-page (&optional arg)
+  "Restrict editing in this buffer to the current page.
+Align the visible region to the margin.
+Prefix argument specifies how many pages to jump forward or backward."
+  (interactive "P")
+  (setq arg (if arg (prefix-numeric-value arg) 0))
+  (narrow-to-page arg)
+  (narrow-reindent--after-narrow))
+
+(defun narrow-reindent-widen ()
+  "Remove restrictions (narrowing) from current buffer.
+This allows the buffer's full text to be seen and edited.
+Remove margin-alignment done by other narrow-reindent functions."
+  (interactive)
+  (narrow-reindent--before-widen)
+  (widen))
 
 (provide 'narrow-reindent)
 ;;; narrow-reindent.el ends here
