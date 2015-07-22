@@ -5,7 +5,7 @@
 ;; Author: J David Smith <emallson@atlanis.net>
 ;; Maintainer: J David Smith <emallson@atlanis.net>
 ;; Homepage: https://github.com/emallson/narrow-reindent.el
-;; Version: 0.1.0
+;; Version: 0.2.0
 ;; Package-Requires: ((emacs "24.4"))
 
 ;; This program is free software: you can redistribute it and/or modify
